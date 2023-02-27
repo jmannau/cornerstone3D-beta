@@ -1,6 +1,6 @@
 import { ByteArray } from 'dicom-parser';
-import openJphFactory from '@cornerstonejs/codec-openjph/wasmjs';
-import openjphWasm from '@cornerstonejs/codec-openjph/wasm';
+import openJphFactory from '@cornerstonejs/codec-openjph/dist/openjphjs';
+import openjphWasm from '@cornerstonejs/codec-openjph/dist/openjphjs.wasm';
 
 import { LoaderDecodeOptions } from '../../types';
 

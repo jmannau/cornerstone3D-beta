@@ -13,3 +13,5 @@ declare module '@cornerstonejs/codec-libjpeg-turbo-8bit/dist/libjpegturbowasm_de
   declare const Module: EmscriptenModuleFactory<OpenJpegModule>;
   export default Module;
 }
+
+declare module '@cornerstonejs/codec-libjpeg-turbo-8bit/dist/libjpegturbowasm_decode.wasm';

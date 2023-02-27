@@ -16,3 +16,5 @@ declare module '@cornerstonejs/codec-charls/dist/charlswasm_decode' {
   declare const Module: EmscriptenModuleFactory<CharlsModule>;
   export default Module;
 }
+
+declare module '@cornerstonejs/codec-charls/dist/charlswasm_decode.wasm';
