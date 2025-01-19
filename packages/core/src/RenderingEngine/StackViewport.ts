@@ -2389,8 +2389,6 @@ class StackViewport extends Viewport {
         spacing,
         numberOfComponents,
         pixelArray: image.voxelManager.getScalarData(),
-        // TODO: Need to update ImageLoader so that compatible `vtk.js` ranges
-        // can be passed in.
         ranges: image.ranges,
       });
       const imageActor = this.createActorMapper(imagedata);
