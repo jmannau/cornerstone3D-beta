@@ -1,6 +1,7 @@
 import vtkDataArray from '@kitware/vtk.js/Common/Core/DataArray';
 import type { vtkImageData as vtkImageDataType } from '@kitware/vtk.js/Common/DataModel/ImageData';
 import vtkImageData from '@kitware/vtk.js/Common/DataModel/ImageData';
+import type { vtkRange } from '@kitware/vtk.js/interfaces';
 import vtkCamera from '@kitware/vtk.js/Rendering/Core/Camera';
 import vtkColorTransferFunction from '@kitware/vtk.js/Rendering/Core/ColorTransferFunction';
 import vtkColorMaps from '@kitware/vtk.js/Rendering/Core/ColorTransferFunction/ColorMaps';
@@ -1760,7 +1761,17 @@ class StackViewport extends Viewport {
     spacing,
     numberOfComponents,
     pixelArray,
+    ranges,
+  }: {
+    origin: Point3;
+    direction: Mat3;
+    dimensions: Point3;
+    spacing: [number, number, number];
+    numberOfComponents: number;
+    pixelArray: PixelDataTypedArray;
+    ranges?: vtkRange[];
   }) {
+    // @ts-expect-error - typescript doesn't like the reference to `new pixelArary.constructor`
     const values = new pixelArray.constructor(pixelArray.length);
 
     // Todo: I guess nothing should be done for use16bit?
@@ -1768,6 +1779,7 @@ class StackViewport extends Viewport {
       name: 'Pixels',
       numberOfComponents: numberOfComponents,
       values: values,
+      ranges: ranges,
     });
 
     const imageData = vtkImageData.newInstance();
@@ -1794,6 +1806,15 @@ class StackViewport extends Viewport {
     spacing,
     numberOfComponents,
     pixelArray,
+    ranges,
+  }: {
+    origin: Point3;
+    direction: Mat3;
+    dimensions: Point3;
+    spacing: [number, number, number];
+    numberOfComponents: number;
+    pixelArray: PixelDataTypedArray;
+    ranges?: vtkRange[];
   }): void {
     try {
       this._imageData = this.createVTKImageData({
@@ -1803,6 +1824,7 @@ class StackViewport extends Viewport {
         spacing,
         numberOfComponents,
         pixelArray,
+        ranges,
       });
     } catch (e) {
       console.error(e);
@@ -2367,6 +2389,9 @@ class StackViewport extends Viewport {
         spacing,
         numberOfComponents,
         pixelArray: image.voxelManager.getScalarData(),
+        // TODO: Need to update ImageLoader so that compatible `vtk.js` ranges
+        // can be passed in.
+        ranges: image.ranges,
       });
       const imageActor = this.createActorMapper(imagedata);
       if (imageActor) {
@@ -2395,7 +2420,7 @@ class StackViewport extends Viewport {
    * @param image - Cornerstone image
    * @returns
    */
-  private _updateActorToDisplayImageId(image) {
+  private _updateActorToDisplayImageId(image: IImage) {
     // This function should do the following:
     // - Get the existing actor's vtkImageData that is being used to render the current image and check if we can reuse the vtkImageData that is in place (i.e. do the image dimensions and data type match?)
     // - If we can reuse it, replace the scalar data under the hood
@@ -2460,6 +2485,7 @@ class StackViewport extends Viewport {
       spacing,
       numberOfComponents,
       pixelArray,
+      ranges: image.ranges,
     });
 
     // Set the scalar data of the vtkImageData object from the Cornerstone

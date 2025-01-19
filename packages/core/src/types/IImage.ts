@@ -1,3 +1,4 @@
+import type { vtkRange } from '@kitware/vtk.js/interfaces';
 import type CPUFallbackLUT from './CPUFallbackLUT';
 import type {
   PixelDataTypedArray,
@@ -145,6 +146,23 @@ interface IImage {
     buffer: ArrayBuffer;
     offset: number;
   };
+
+  /**
+   * If available, this will be passed to vtk.js preventing the need for
+   * `vtk.js` to calculate the range on each render. This is a performance
+   * improvement designed for ultrasound cine-loops where performance can be
+   * de-graded by `vtk.js` calling `getRanges` on every frame
+   *
+   * @example
+   * ```js
+   * ranges: [
+   *  { min: 0, max: 255, component: 0 },
+   *  { min: 0, max: 255, component: 1 },
+   *  { min: 0, max: 255, component: 2 },
+   * ]
+   * ```
+   **/
+  ranges?: vtkRange[];
 }
 
 interface CPUFallbackEnabledElement {
